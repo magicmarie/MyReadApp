@@ -1,45 +1,19 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import { Route } from 'react-router-dom';
+
 import '../css/App.css'
-import BookShelf from './BookShelf';
 import SearchPage from './SearchPage';
+import BooksPage from './BooksPage';
 
 class BooksApp extends React.Component {
-  state = {
-    showSearchPage: false
-  }
-
-  showSearch = () => {
-    this.setState({showSearchPage: false});
-  }
-
   render() {
-    const { showSearchPage } = this.state;
     return (
       <div className="app">
-        { showSearchPage && <SearchPage/> }
-        <div className="list-books">
-          <div className="list-books-title">
-            <h1>MyReads</h1>
-          </div>
-          <div className="list-books-content">
-            <BookShelf
-              shelfName='Currently Reading'
-            />
-            <BookShelf
-              shelfName='Want to Read'
-            />
-            <BookShelf
-              shelfName='Read'
-            />
-          </div>
-          <div className="open-search">
-            <button onClick={this.showSearch}>Add a book</button>
-          </div>
-        </div>
+        <Route path="/" exact component={BooksPage} />
+        <Route path="/search" exact component={SearchPage}/>
       </div>
     )
   }
 }
 
-export default BooksApp
+export default BooksApp;
