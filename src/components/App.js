@@ -23,9 +23,15 @@ class BooksApp extends React.Component {
             <h1>MyReads</h1>
           </div>
           <div className="list-books-content">
-            <BookShelf/>
-            <BookShelf/>
-            <BookShelf/>
+            <BookShelf
+              shelfName='Currently Reading'
+            />
+            <BookShelf
+              shelfName='Want to Read'
+            />
+            <BookShelf
+              shelfName='Read'
+            />
           </div>
           <div className="open-search">
             <button onClick={this.showSearch}>Add a book</button>

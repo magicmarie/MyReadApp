@@ -4,9 +4,10 @@ import Book from './Book';
 
 class BookShelf extends React.Component {
   render() {
+    const { shelfName } = this.props;
     return (
       <div className="bookshelf">
-        <h2 className="bookshelf-title">Currently Reading</h2>
+        <h2 className="bookshelf-title">{shelfName}</h2>
         <div className="bookshelf-books">
           <ol className="books-grid">
             <li>
