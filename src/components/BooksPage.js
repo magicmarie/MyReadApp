@@ -8,15 +8,23 @@ class BooksPage extends React.Component {
 
   state = {
     showSearchPage: false,
-    bookList: []
+    bookList: [],
   }
 
   showSearch = () => {
     this.setState({showSearchPage: true});
   }
 
-  componentDidMount() {
+  getAllBooks() {
     BooksAPI.getAll().then(bookList => this.setState({ bookList }));
+  }
+
+  handleOnChange = (book, shelf) => {
+    BooksAPI.update(book, shelf).then(() => this.getAllBooks());
+  }
+
+  componentDidMount() {
+    this.getAllBooks();
   }
   render() {
     const { showSearchPage, bookList } = this.state;
@@ -31,16 +39,19 @@ class BooksPage extends React.Component {
             </div>
             <div className="list-books-content">
               <BookShelf
-                books={bookList}
+                books={bookList.filter(book => book.shelf === 'currentlyReading')}
                 shelfName='Currently Reading'
+                handleOnChange={this.handleOnChange}
               />
               <BookShelf
-                books={bookList}
+                books={bookList.filter(book => book.shelf === 'wantToRead')}
                 shelfName='Want to Read'
+                handleOnChange={this.handleOnChange}
               />
               <BookShelf
-                books={bookList}
+                books={bookList.filter(book => book.shelf === 'read')}
                 shelfName='Read'
+                handleOnChange={this.handleOnChange}
               />
             </div>
             <div className="open-search">
