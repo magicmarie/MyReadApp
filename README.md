@@ -6,6 +6,12 @@ A bookshelf app that allows you to select and categorize books you have read, ar
 
 To get started right away:
 
+First clone it to your local machine by running
+```
+git clone https://github.com/magicmarie/MyReadApp.git
+cd MyReadApp
+```
+
 * install all project dependencies with `npm install`
 * start the development server with `npm start`
 
