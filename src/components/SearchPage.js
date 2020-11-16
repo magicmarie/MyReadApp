@@ -8,7 +8,7 @@ import * as BooksAPI from '../server/BooksAPI';
 class SearchPage extends React.Component {
 
   state = {
-    books: [],
+    bookList: [],
     search: '',
     loading: false,
   }
@@ -18,19 +18,31 @@ class SearchPage extends React.Component {
       this.setState({ search, loading: true });
 
     await BooksAPI.search(search).then(books => {
-        this.setState({ books });
+        this.shelfUpdate(books);
       });
-    } catch(e) {
-      alert("Error searching");
     } finally {
       this.setState({loading: false });
     }
+  }
 
+  shelfUpdate = (bookList) => {
+    (bookList || []).map(book => {
+      this.props.books.forEach(bookOnShelf => {
+        if (bookOnShelf.id === book.id) {
+          book.shelf = bookOnShelf.shelf;
+          console.log(book.shelf, book.title, "mariam");
+        } else {
+          book.shelf = 'none';
+        }
+      })
+      return book;
+    })
+    this.setState({ bookList });
   }
 
   render() {
     const { handleOnChange } = this.props;
-    const { search, books } = this.state;
+    const { search, bookList, loading } = this.state;
 
     return (
       <div className="search-books">
@@ -48,12 +60,13 @@ class SearchPage extends React.Component {
         <OverlayLoader
           loader="ScaleLoader"
           text="Loading... Please wait!"
-          active={this.state.loading}>
+          active={loading}>
           <div className="search-books-results">
             <ol className="books-grid">
+              {bookList.length === 0 && (<p>No results yet</p>)}
               {
-                Boolean(search) && books.length > 0 &&
-                (books.map((book) =>
+                bookList.length > 0 &&
+                (bookList.map((book) =>
                   <Book
                     key={book.id}
                     book={book}
