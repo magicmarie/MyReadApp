@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import OverlayLoader from 'react-overlay-loading/lib/OverlayLoader'
 
 import Book from './Book';
 import * as BooksAPI from '../server/BooksAPI';
@@ -7,27 +8,29 @@ import * as BooksAPI from '../server/BooksAPI';
 class SearchPage extends React.Component {
 
   state = {
-    searchResults: [],
     books: [],
     search: '',
+    loading: false,
   }
 
-  handleSearch = (search) => {
-    this.setState({ search: search.trim() });
+  handleSearch = async (search) => {
+    try{
+      this.setState({ search, loading: true });
 
-    BooksAPI.search(search).then(books => {
+    await BooksAPI.search(search).then(books => {
         this.setState({ books });
       });
-  }
+    } catch(e) {
+      alert("Error searching");
+    } finally {
+      this.setState({loading: false });
+    }
 
-  handleOnChange(book, e) {
-    BooksAPI.update(book, e.target.value)
-      .then(() => e.target.name !== 'none' ? alert(`${book.title} added to ${e.target.value} shelf!`) : alert('None chosen'));
   }
 
   render() {
+    const { handleOnChange } = this.props;
     const { search, books } = this.state;
-    console.log(books);
 
     return (
       <div className="search-books">
@@ -42,26 +45,26 @@ class SearchPage extends React.Component {
             />
           </div>
         </div>
-        <div className="search-books-results">
-          <ol className="books-grid">
-            {
-              Boolean(search) && books.length === 0 && (
-                <p>No results for this search</p>
-              )
-            }
-            {
-              Boolean(search) && books.length > 0 &&
-              (books.map((book) =>
-                <Book
-                  key={book.id}
-                  book={book}
-                  handleOnChange={(book, e) => this.handleOnChange(book, e.target.value)}
-                />
+        <OverlayLoader
+          loader="ScaleLoader"
+          text="Loading... Please wait!"
+          active={this.state.loading}>
+          <div className="search-books-results">
+            <ol className="books-grid">
+              {
+                Boolean(search) && books.length > 0 &&
+                (books.map((book) =>
+                  <Book
+                    key={book.id}
+                    book={book}
+                    handleOnChange={handleOnChange}
+                  />
+                  )
                 )
-              )
-            }
-          </ol>
-        </div>
+              }
+            </ol>
+          </div>
+        </OverlayLoader>
       </div>
     )
   }
