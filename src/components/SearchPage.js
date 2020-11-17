@@ -18,23 +18,24 @@ class SearchPage extends React.Component {
       this.setState({ search, loading: true });
 
     await BooksAPI.search(search).then(books => {
-        this.shelfUpdate(books);
+      books instanceof Array ? this.shelfUpdate(books) : this.setState({bookList: []});
       });
     } finally {
       this.setState({loading: false });
     }
   }
 
-  shelfUpdate = (bookList) => {
-    (bookList || []).map(book => {
-      this.props.books.forEach(bookOnShelf => {
-        if (bookOnShelf.id === book.id) {
-          book.shelf = bookOnShelf.shelf;
-          console.log(book.shelf, book.title, "mariam");
+  shelfUpdate = (books) => {
+    const bookList = (books).map(book => {
+      for(let bookOnShelf of this.props.books) {
+        if(bookOnShelf.id === book.id) {
+          book.shelf = bookOnShelf.shelf
+          break;
         } else {
-          book.shelf = 'none';
+          book.shelf = 'none'
+          continue;
         }
-      })
+      }
       return book;
     })
     this.setState({ bookList });
