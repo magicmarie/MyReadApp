@@ -6,6 +6,12 @@ import PropTypes from 'prop-types';
 import BookShelf from './BookShelf';
 
 const BooksPage = ({ books, handleOnChange, loading }) => {
+  const shelves = [
+    { key: 'currentlyReading', name: 'Currently Reading' },
+    { key: 'wantToRead', name: 'Want to Read' },
+    { key: 'read', name: 'Read' }
+  ];
+
   return (
     <div>
       <div className="list-books">
@@ -18,21 +24,14 @@ const BooksPage = ({ books, handleOnChange, loading }) => {
           active={loading}
         >
           <div className="list-books-content">
-            <BookShelf
-              books={books.filter(book => book.shelf === 'currentlyReading')}
-              shelfName='Currently Reading'
-              handleOnChange={handleOnChange}
-            />
-            <BookShelf
-              books={books.filter(book => book.shelf === 'wantToRead')}
-              shelfName='Want to Read'
-              handleOnChange={handleOnChange}
-            />
-            <BookShelf
-              books={books.filter(book => book.shelf === 'read')}
-              shelfName='Read'
-              handleOnChange={handleOnChange}
-            />
+            {shelves.map((shelf, index) => (
+              <BookShelf
+                key={index}
+                books={books.filter(book => book.shelf === shelf.key)}
+                shelfName={shelf.name}
+                handleOnChange={handleOnChange}
+              />
+            ))}
           </div>
         </OverlayLoader>
         <div className="open-search">
